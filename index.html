@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyHomework - Make Learning Fun!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #ffdd00 0%, #ff8c00 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .sticker {
+            animation: bounce 0.5s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .progress-bar {
+            transition: width 0.8s ease-in-out;
+        }
+        
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .field-error {
+            border-color: #dc2626 !important;
+            background-color: #fef2f2 !important;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+            padding: 16px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background-color: #10b981;
+        }
+        
+        .notification.error {
+            background-color: #ef4444;
+        }
+        
+        .notification.warning {
+            background-color: #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl">📚</div>
+                    <h1 class="text-2xl font-bold text-black">EasyHomework</h1>
+                </div>
+                <div class="flex space-x-4">
+                    <button id="loginBtn" onclick="showLogin()" class="bg-white text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">Login</button>
+                    <button id="registerBtn" onclick="showRegister()" class="bg-white text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">Register</button>
+                    
+                    <!-- User Dropdown (hidden by default) -->
+                    <div id="userDropdown" class="relative hidden">
+                        <button onclick="toggleDropdown()" class="bg-white text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition flex items-center space-x-2">
+                            <span id="userNameDisplay">User Name</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+                            <div class="px-4 py-3 border-b border-gray-200">
+                                <p class="text-sm font-semibold text-gray-800" id="dropdownUserName">User Name</p>
+                                <p class="text-xs text-gray-600" id="dropdownUserType">Parent</p>
+                            </div>
+                            <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition flex items-center space-x-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div id="heroSection" class="gradient-bg py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold text-black mb-6">Transform Homework Battles into Fun Adventures!</h2>
+            <p class="text-xl text-black mb-8 max-w-3xl mx-auto">
+                Say goodbye to daily homework struggles. Watch your children eagerly complete tasks, earn colorful stickers, 
+                and compete for exciting rewards while you track their progress on a beautiful dashboard.
+            </p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="featuresSection" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center text-gray-800 mb-12">Why Families Love EasyHomework</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-6 rounded-xl bg-gradient-to-br from-yellow-200 to-orange-300 card-hover">
+                    <div class="text-4xl mb-4">🏆</div>
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">Gamified Learning</h4>
+                    <p class="text-gray-700">Children earn points and stickers for every completed task, making homework feel like an exciting game!</p>
+                </div>
+                <div class="text-center p-6 rounded-xl bg-gradient-to-br from-yellow-200 to-green-300 card-hover">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">Progress Tracking</h4>
+                    <p class="text-gray-700">Beautiful dashboards show real-time progress, helping parents celebrate every achievement.</p>
+                </div>
+                <div class="text-center p-6 rounded-xl bg-gradient-to-br from-yellow-200 to-blue-300 card-hover">
+                    <div class="text-4xl mb-4">🤝</div>
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">Teacher Collaboration</h4>
+                    <p class="text-gray-700">Invite teachers to supervise homework and ensure assignments are completed on time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Get Started Section -->
+    <div id="getStartedSection" class="py-16 gradient-bg">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h3 class="text-3xl font-bold text-black mb-6">Ready to Transform Homework Time?</h3>
+            <p class="text-xl text-black mb-8">Join thousands of families already using EasyHomework to make learning fun and engaging!</p>
+            <button onclick="showRegister()" class="bg-white text-gray-800 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition shadow-lg">
+                Start Your 7-Day Free Trial
+            </button>
+            <p class="text-black mt-4 text-sm">No credit card required • Cancel anytime</p>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div id="pricingSection" class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">Simple, Affordable Pricing</h3>
+                <p class="text-xl text-gray-600">Start with a 7-day free trial, then choose the plan that fits your family</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Single Child Plan -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-gray-200 card-hover">
+                    <div class="text-center mb-6">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-2">Single Child</h4>
+                        <p class="text-gray-600">Perfect for families with one child</p>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <div class="text-4xl font-bold text-gray-800 mb-2">₦3,000</div>
+                        <p class="text-gray-600">per month</p>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Track 1 child's homework</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Unlimited tasks & rewards</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Teacher collaboration</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Progress tracking & analytics</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Gamification & stickers</span>
+                        </li>
+                    </ul>
+                    
+                    <button onclick="showRegister()" class="w-full gradient-bg text-white py-4 rounded-lg font-semibold hover:opacity-90 transition">
+                        Start Free Trial
+                    </button>
+                </div>
+                
+                <!-- Multiple Children Plan -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-yellow-400 card-hover relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold">MOST POPULAR</span>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-2">Multiple Children</h4>
+                        <p class="text-gray-600">For families with 2-6 children</p>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <div class="text-4xl font-bold text-gray-800 mb-2">₦6,000</div>
+                        <p class="text-gray-600">per month</p>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Track up to 6 children</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Unlimited tasks & rewards</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Multiple teacher invitations</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Family progress dashboard</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-500 mr-3">✅</span>
+                            <span class="text-gray-700">Priority support</span>
+                        </li>
+                    </ul>
+                    
+                    <button onclick="showRegister()" class="w-full gradient-bg text-white py-4 rounded-lg font-semibold hover:opacity-90 transition">
+                        Start Free Trial
+                    </button>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-600 mb-4">
+                    <strong>Free Trial Details:</strong> Full access to all features for 7 days. No credit card required to start.
+                </p>
+                <p class="text-sm text-gray-500 mb-4">
+                    Cancel anytime during your trial period with no charges. After trial, choose the plan that works best for your family.
+                </p>
+                
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Footer -->
+    <footer id="contactFooter" class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="text-3xl">📚</div>
+                        <h3 class="text-2xl font-bold">EasyHomework</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Making homework fun and engaging for families everywhere.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <a href="mailto:morichcare@gmail.com" class="text-gray-300 hover:text-white transition">morichcare@gmail.com</a>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <a href="tel:+2349016472315" class="text-gray-300 hover:text-white transition">+234 901 647 2315</a>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-gray-300">Lagos, Nigeria</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <a href="#featuresSection" class="text-gray-300 hover:text-white transition">Features</a>
+                        </div>
+                        <div>
+                            <a href="#pricingSection" class="text-gray-300 hover:text-white transition">Pricing</a>
+                        </div>
+                        <div>
+                            <a href="#getStartedSection" class="text-gray-300 hover:text-white transition">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 EasyHomework. All rights reserved. Made with ❤️ for families.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Welcome Back! 👋</h3>
+                <p class="text-gray-600">Sign in to continue your homework journey</p>
+            </div>
+            
+            <!-- User Type Selection -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">I am a...</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" onclick="selectLoginType('parent')" id="parentLoginBtn" class="p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center">
+                        <div class="text-2xl mb-1">👨‍👩‍👧‍👦</div>
+                        <div class="font-semibold text-gray-800 text-sm">Parent</div>
+                    </button>
+                    <button type="button" onclick="selectLoginType('teacher')" id="teacherLoginBtn" class="p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center">
+                        <div class="text-2xl mb-1">👩‍🏫</div>
+                        <div class="font-semibold text-gray-800 text-sm">Teacher</div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Parent Login Form -->
+            <form id="parentLoginForm" onsubmit="handleLogin(event)" class="hidden">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Email</label>
+                    <input type="email" id="parentEmail" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Password</label>
+                    <input type="password" id="parentPassword" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                </div>
+                <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                    Sign In as Parent
+                </button>
+            </form>
+            
+            <!-- Teacher Login Form -->
+            <form id="teacherLoginForm" onsubmit="handleTeacherLogin(event)" class="hidden">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                    <input type="text" id="teacherName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent" placeholder="Enter your full name">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Phone Number</label>
+                    <input type="tel" id="teacherPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Teacher Code</label>
+                    <input type="text" id="teacherCode" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent" placeholder="Enter code from parent">
+                </div>
+                <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                    Sign In as Teacher
+                </button>
+            </form>
+            
+            <button onclick="closeModal()" class="mt-4 w-full text-gray-500 hover:text-gray-700">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-sm w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="text-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Join EasyHomework! 🎉</h3>
+                <p class="text-sm text-gray-600">Create your parent account and start the fun</p>
+            </div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <!-- Full Name -->
+                <div class="mb-3">
+                    <label class="block text-gray-700 font-semibold mb-1 text-sm">Full Name</label>
+                    <input type="text" id="reg_fullName" name="fullName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm">
+                    <div id="error_fullName" class="error-message hidden"></div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="block text-gray-700 font-semibold mb-1 text-sm">Email</label>
+                    <input type="email" id="reg_email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm">
+                    <div id="error_email" class="error-message hidden"></div>
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label class="block text-gray-700 font-semibold mb-1 text-sm">Phone Number</label>
+                    <input type="tel" id="reg_phone" name="phone" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm">
+                    <div id="error_phone" class="error-message hidden"></div>
+                </div>
+
+                <!-- Children Section -->
+                <div class="mb-3">
+                    <label class="block text-gray-700 font-semibold mb-2 text-sm">How many children do you have? <span class="text-red-500">*</span></label>
+                    
+                    <!-- Child Count Selection -->
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <button type="button" onclick="selectChildCount('single')" id="singleChildBtn" class="p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center">
+                            <div class="text-2xl mb-1">👶</div>
+                            <div class="font-semibold text-gray-800 text-sm">One Child</div>
+                            <div class="text-xs text-gray-600">Single child</div>
+                        </button>
+                        
+                        <button type="button" onclick="selectChildCount('multiple')" id="multipleChildrenBtn" class="p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center">
+                            <div class="text-2xl mb-1">👨‍👩‍👧‍👦</div>
+                            <div class="font-semibold text-gray-800 text-sm">Multiple</div>
+                            <div class="text-xs text-gray-600">2-6 children</div>
+                        </button>
+                    </div>
+                    <div id="error_childCount" class="error-message hidden"></div>
+                    
+                    <!-- Single Child Input -->
+                    <div id="singleChildInput" class="hidden">
+                        <label class="block text-gray-700 font-semibold mb-1 text-sm">Child's Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="reg_singleChildName" name="singleChildName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm" placeholder="Enter your child's name">
+                        <div id="error_singleChildName" class="error-message hidden"></div>
+                    </div>
+                    
+                    <!-- Multiple Children Inputs -->
+                    <div id="multipleChildrenInputs" class="hidden">
+                        <label class="block text-gray-700 font-semibold mb-1 text-sm">Children's Names <span class="text-red-500">*</span></label>
+                        <div id="childrenInputContainer">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <input type="text" name="childName" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm" placeholder="First child's name">
+                                <button type="button" onclick="removeChildInput(this)" class="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg font-bold transition">✕</button>
+                            </div>
+                            <div class="flex items-center space-x-2 mb-2">
+                                <input type="text" name="childName" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm" placeholder="Second child's name">
+                                <button type="button" onclick="removeChildInput(this)" class="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg font-bold transition">✕</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addChildInput()" id="addChildButton" class="text-blue-500 hover:text-blue-700 font-semibold text-xs">+ Add another child (up to 6 total)</button>
+                        <div id="error_multipleChildren" class="error-message hidden"></div>
+                        <p class="text-xs text-gray-500 mt-1">All children names are required to complete registration</p>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-1 text-sm">Password</label>
+                    <input type="password" id="reg_password" name="password" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm">
+                    <div id="error_password" class="error-message hidden"></div>
+                </div>
+
+                <button type="submit" class="w-full gradient-bg text-white py-2.5 rounded-lg font-semibold hover:opacity-90 transition text-sm">
+                    Create Parent Account
+                </button>
+            </form>
+            <button onclick="closeModal()" class="mt-3 w-full text-gray-500 hover:text-gray-700 text-sm">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="hidden">
+        <!-- Parent Dashboard -->
+        <div id="parentDashboard" class="hidden">
+            <div class="gradient-bg py-8">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-3xl font-bold text-white" id="dashboardTitle">Family Dashboard 👨‍👩‍👧‍👦</h2>
+                            <p class="text-black" id="welcomeMessage">Welcome! Manage tasks and track progress together</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <!-- Trial Status Banner -->
+                <div id="trialBanner" class="hidden mb-8"></div>
+                
+                <!-- Quick Stats -->
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-purple-500">
+                        <div class="flex items-center">
+                            <div class="text-3xl mr-4">📝</div>
+                            <div>
+                                <p class="text-gray-700">Total Tasks</p>
+                                <p class="text-2xl font-bold text-purple-600" id="totalTasks">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-green-500">
+                        <div class="flex items-center">
+                            <div class="text-3xl mr-4">✅</div>
+                            <div>
+                                <p class="text-gray-700">Completed</p>
+                                <p class="text-2xl font-bold text-green-600" id="completedTasks">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-yellow-500">
+                        <div class="flex items-center">
+                            <div class="text-3xl mr-4">⭐</div>
+                            <div>
+                                <p class="text-gray-700">Total Points</p>
+                                <p class="text-2xl font-bold text-yellow-600" id="totalPoints">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover border-l-4 border-blue-500">
+                        <div class="flex items-center">
+                            <div class="text-3xl mr-4">👨‍🏫</div>
+                            <div>
+                                <p class="text-gray-700">Teachers</p>
+                                <p class="text-2xl font-bold text-blue-600" id="teacherCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 mb-8">
+                    <button onclick="showAddTaskModal()" class="gradient-bg text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition shadow-lg">
+                        ➕ Add New Task
+                    </button>
+                    <button onclick="showInviteTeacherModal()" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition shadow-lg">
+                        👩‍🏫 Invite Teacher
+                    </button>
+                    <button onclick="showRewardsModal()" class="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition shadow-lg">
+                        🎁 Manage Rewards
+                    </button>
+                </div>
+
+                <!-- Family Leaderboard -->
+                <div class="bg-white rounded-xl p-6 shadow-lg mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">🏆 Family Leaderboard</h3>
+                    <div id="familyLeaderboard" class="space-y-4">
+                        <!-- Leaderboard will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Tasks List -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">📋 Current Tasks</h3>
+                    <div id="tasksList" class="space-y-4">
+                        <!-- Tasks will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="addTaskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">➕ Add New Task</h3>
+            <form onsubmit="addTask(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Task Title</label>
+                    <input type="text" id="taskTitle" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent" placeholder="e.g., Complete Math Homework">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Assign to Child</label>
+                    <select id="childSelect" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                        <option value="">Select child...</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Category</label>
+                    <select id="taskCategory" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                        <option value="">Select category...</option>
+                        <option value="homework">📝 Homework</option>
+                        <option value="reading">📚 Reading</option>
+                        <option value="project">🎨 Project</option>
+                        <option value="chores">🏠 Household Chores</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Due Date</label>
+                    <input type="date" id="taskDueDate" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                        Add Task
+                    </button>
+                    <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Invite Teacher Modal -->
+    <div id="inviteTeacherModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">👩‍🏫 Invite Teacher</h3>
+            <div class="text-center">
+                <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6 mb-6">
+                    <p class="text-gray-700 mb-4">Share this code with your teacher:</p>
+                    <div class="text-3xl font-bold bg-white rounded-lg py-4 px-6 border-2" style="color: #fcd803; border-color: #fcd803;" id="teacherCode">
+                        <!-- Code will be generated -->
+                    </div>
+                    <button onclick="copyTeacherCode()" class="mt-4 font-semibold hover:opacity-80" style="color: #fcd803;">
+                        📋 Copy Code
+                    </button>
+                </div>
+                <p class="text-gray-600 text-sm mb-6">
+                    The teacher will need this code during registration to join your family's homework tracking.
+                </p>
+                <button onclick="closeModal()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rewards Modal -->
+    <div id="rewardsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-lg w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">🎁 Available Rewards</h3>
+            <div class="space-y-4 mb-6">
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">🎬</span>
+                        <span class="font-semibold">Movie Night</span>
+                    </div>
+                    <span class="font-bold" style="color: #fcd803;">100 pts</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">💻</span>
+                        <span class="font-semibold">1 Hour Laptop Access</span>
+                    </div>
+                    <span class="font-bold" style="color: #fcd803;">100 pts</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">💰</span>
+                        <span class="font-semibold">₦5,000 Cash</span>
+                    </div>
+                    <span class="font-bold" style="color: #fcd803;">200 pts</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">💸</span>
+                        <span class="font-semibold">₦10,000 Cash</span>
+                    </div>
+                    <span class="font-bold" style="color: #fcd803;">400 pts</span>
+                </div>
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">🍕</span>
+                        <span class="font-semibold">Special Meal</span>
+                    </div>
+                    <span class="font-bold" style="color: #fcd803;">150 pts</span>
+                </div>
+            </div>
+            <button onclick="closeModal()" class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">💳 Choose Your Plan</h3>
+            
+            <div class="space-y-4 mb-6">
+                <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-yellow-500 transition cursor-pointer" onclick="selectPlan('single', 3000)">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Single Child Plan</h4>
+                            <p class="text-sm text-gray-600">Perfect for 1 child</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xl font-bold text-gray-800">₦3,000</div>
+                            <div class="text-sm text-gray-600">per month</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-2 border-yellow-400 bg-yellow-50 rounded-lg p-4 cursor-pointer relative" onclick="selectPlan('multiple', 6000)">
+                    <div class="absolute -top-2 left-4">
+                        <span class="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">POPULAR</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Multiple Children Plan</h4>
+                            <p class="text-sm text-gray-600">For 2-6 children</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xl font-bold text-gray-800">₦6,000</div>
+                            <div class="text-sm text-gray-600">per month</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage System
+        class DataStorage {
+            static save(key, data) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(data));
+                    return true;
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                    return false;
+                }
+            }
+
+            static load(key) {
+                try {
+                    const data = localStorage.getItem(key);
+                    return data ? JSON.parse(data) : null;
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    return null;
+                }
+            }
+
+            static remove(key) {
+                try {
+                    localStorage.removeItem(key);
+                    return true;
+                } catch (error) {
+                    console.error('Error removing data:', error);
+                    return false;
+                }
+            }
+
+            static clear() {
+                try {
+                    localStorage.clear();
+                    return true;
+                } catch (error) {
+                    console.error('Error clearing data:', error);
+                    return false;
+                }
+            }
+        }
+
+        // User Management System
+        class UserManager {
+            static saveUser(user) {
+                return DataStorage.save('currentUser', user);
+            }
+
+            static loadUser() {
+                return DataStorage.load('currentUser');
+            }
+
+            static clearUser() {
+                return DataStorage.remove('currentUser');
+            }
+
+            static getAllUsers() {
+                return DataStorage.load('allUsers') || [];
+            }
+
+            static saveAllUsers(users) {
+                return DataStorage.save('allUsers', users);
+            }
+
+            static registerUser(userData) {
+                const allUsers = this.getAllUsers();
+                
+                // Check if email already exists
+                const existingUser = allUsers.find(user => user.email === userData.email);
+                if (existingUser) {
+                    return { success: false, error: 'An account with this email already exists.' };
+                }
+
+                // Create new user
+                const newUser = {
+                    id: this.generateUserId(),
+                    type: 'parent',
+                    name: userData.fullName,
+                    email: userData.email,
+                    phone: userData.phone,
+                    passwordHash: this.hashPassword(userData.password),
+                    children: userData.children,
+                    trialStartDate: new Date().toISOString(),
+                    subscriptionStatus: 'trial',
+                    teacherCode: this.generateTeacherCode(),
+                    createdAt: new Date().toISOString()
+                };
+
+                // Add to users database
+                allUsers.push(newUser);
+                this.saveAllUsers(allUsers);
+
+                return { success: true, user: newUser };
+            }
+
+            static authenticateUser(email, password) {
+                const allUsers = this.getAllUsers();
+                const user = allUsers.find(user => 
+                    user.email === email && 
+                    user.passwordHash === this.hashPassword(password)
+                );
+
+                if (user) {
+                    return { success: true, user: user };
+                } else {
+                    return { success: false, error: 'Invalid email or password.' };
+                }
+            }
+
+            static authenticateTeacher(name, phone, teacherCode) {
+                const allUsers = this.getAllUsers();
+                
+                // Find parent with matching teacher code
+                const parentUser = allUsers.find(user => 
+                    user.type === 'parent' && 
+                    user.teacherCode === teacherCode
+                );
+
+                if (!parentUser) {
+                    return { success: false, error: 'Invalid teacher code. Please check with the parent.' };
+                }
+
+                // Check if teacher already exists for this code
+                const existingTeacher = allUsers.find(user => 
+                    user.type === 'teacher' && 
+                    user.teacherCode === teacherCode &&
+                    user.phone === phone
+                );
+
+                if (existingTeacher) {
+                    return { success: true, user: existingTeacher };
+                }
+
+                // Create new teacher account
+                const newTeacher = {
+                    id: this.generateUserId(),
+                    type: 'teacher',
+                    name: name,
+                    phone: phone,
+                    teacherCode: teacherCode,
+                    parentId: parentUser.id,
+                    children: parentUser.children,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Add to users database
+                allUsers.push(newTeacher);
+                this.saveAllUsers(allUsers);
+
+                return { success: true, user: newTeacher };
+            }
+
+            static updateUser(userId, updates) {
+                const allUsers = this.getAllUsers();
+                const userIndex = allUsers.findIndex(user => user.id === userId);
+                
+                if (userIndex !== -1) {
+                    allUsers[userIndex] = { ...allUsers[userIndex], ...updates };
+                    this.saveAllUsers(allUsers);
+                    return { success: true, user: allUsers[userIndex] };
+                }
+                
+                return { success: false, error: 'User not found.' };
+            }
+
+            static generateUserId() {
+                return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            static generateTeacherCode() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < 9; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            static hashPassword(password) {
+                // Simple hash for demo - in production use proper hashing
+                let hash = 0;
+                for (let i = 0; i < password.length; i++) {
+                    const char = password.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32-bit integer
+                }
+                return hash.toString();
+            }
+
+            static validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            static validatePhone(phone) {
+                const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+                return phoneRegex.test(phone);
+            }
+
+            static validatePassword(password) {
+                if (password.length < 6) {
+                    return { valid: false, error: 'Password must be at least 6 characters long.' };
+                }
+                if (!/[A-Za-z]/.test(password)) {
+                    return { valid: false, error: 'Password must contain at least one letter.' };
+                }
+                if (!/[0-9]/.test(password)) {
+                    return { valid: false, error: 'Password must contain at least one number.' };
+                }
+                return { valid: true };
+            }
+
+            static validateName(name) {
+                if (name.length < 2) {
+                    return { valid: false, error: 'Name must be at least 2 characters long.' };
+                }
+                if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    return { valid: false, error: 'Name can only contain letters and spaces.' };
+                }
+                return { valid: true };
+            }
+        }
+
+        // Task Management System
+        class TaskManager {
+            static saveTasks(userId, tasks) {
+                return DataStorage.save(`tasks_${userId}`, tasks);
+            }
+
+            static loadTasks(userId) {
+                return DataStorage.load(`tasks_${userId}`) || [];
+            }
+
+            static generateTaskId() {
+                return 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            static addTask(userId, task) {
+                const tasks = this.loadTasks(userId);
+                task.id = this.generateTaskId();
+                task.createdAt = new Date().toISOString();
+                task.completed = false;
+                tasks.push(task);
+                return this.saveTasks(userId, tasks);
+            }
+
+            static updateTask(userId, taskId, updates) {
+                const tasks = this.loadTasks(userId);
+                const taskIndex = tasks.findIndex(task => task.id === taskId);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex] = { ...tasks[taskIndex], ...updates };
+                    return this.saveTasks(userId, tasks);
+                }
+                return false;
+            }
+
+            static deleteTask(userId, taskId) {
+                const tasks = this.loadTasks(userId);
+                const filteredTasks = tasks.filter(task => task.id !== taskId);
+                return this.saveTasks(userId, filteredTasks);
+            }
+
+            static completeTask(userId, taskId) {
+                return this.updateTask(userId, taskId, { 
+                    completed: true, 
+                    completedAt: new Date().toISOString() 
+                });
+            }
+        }
+
+        // Notification System
+        class NotificationManager {
+            static show(message, type = 'success', duration = 3000) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Trigger animation
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // Remove notification
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => document.body.removeChild(notification), 300);
+                }, duration);
+            }
+
+            static success(message) {
+                this.show(message, 'success');
+            }
+
+            static error(message) {
+                this.show(message, 'error');
+            }
+
+            static warning(message) {
+                this.show(message, 'warning');
+            }
+        }
+
+        // Global variables
+        let currentUser = null;
+        let selectedChildCount = null;
+        let tasks = [];
+
+        // Initialize app
+        function initializeApp() {
+            currentUser = UserManager.loadUser();
+            if (currentUser) {
+                // Load tasks based on user type
+                if (currentUser.type === 'teacher' && currentUser.parentId) {
+                    tasks = TaskManager.loadTasks(currentUser.parentId);
+                } else {
+                    tasks = TaskManager.loadTasks(currentUser.id);
+                }
+                
+                updateNavigation();
+                showDashboard();
+                
+                // Show welcome back message
+                NotificationManager.success(`Welcome back, ${currentUser.name}! 👋`);
+            }
+            
+            // Set minimum date for task due date to today
+            const today = new Date().toISOString().split('T')[0];
+            const dueDateInput = document.getElementById('taskDueDate');
+            if (dueDateInput) {
+                dueDateInput.min = today;
+            }
+        }
+
+        // Trial management
+        function getTrialEndDate(startDate) {
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 7);
+            return endDate;
+        }
+
+        function isTrialExpired(user) {
+            if (!user || !user.trialStartDate) return false;
+            const trialEndDate = getTrialEndDate(user.trialStartDate);
+            return new Date() > trialEndDate;
+        }
+
+        function getDaysRemaining(user) {
+            if (!user || !user.trialStartDate) return 0;
+            const trialEndDate = getTrialEndDate(user.trialStartDate);
+            const today = new Date();
+            const diffTime = trialEndDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.max(0, diffDays);
+        }
+
+        // Utility functions
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.classList.add('hidden');
+                error.textContent = '';
+            });
+            document.querySelectorAll('.field-error').forEach(field => {
+                field.classList.remove('field-error');
+            });
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(`error_${fieldId.replace('reg_', '')}`);
+            
+            if (field) {
+                field.classList.add('field-error');
+                field.focus();
+            }
+            
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // Modal functions
+        function showLogin() {
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function showRegister() {
+            const modal = document.getElementById('registerModal');
+            
+            // Reset form
+            document.getElementById('registerForm').reset();
+            clearErrors();
+            selectedChildCount = null;
+            
+            // Reset child count buttons
+            document.getElementById('singleChildBtn').className = 'p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center';
+            document.getElementById('multipleChildrenBtn').className = 'p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center';
+            
+            // Hide child input sections
+            document.getElementById('singleChildInput').classList.add('hidden');
+            document.getElementById('multipleChildrenInputs').classList.add('hidden');
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.fixed').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+        }
+
+        function selectLoginType(type) {
+            const parentBtn = document.getElementById('parentLoginBtn');
+            const teacherBtn = document.getElementById('teacherLoginBtn');
+            const parentForm = document.getElementById('parentLoginForm');
+            const teacherForm = document.getElementById('teacherLoginForm');
+            
+            // Reset button styles
+            parentBtn.className = 'p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center';
+            teacherBtn.className = 'p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center';
+            
+            // Hide both forms
+            parentForm.classList.add('hidden');
+            teacherForm.classList.add('hidden');
+            
+            if (type === 'parent') {
+                parentBtn.className = 'p-3 border-2 border-yellow-500 bg-yellow-50 rounded-lg transition text-center';
+                parentForm.classList.remove('hidden');
+            } else if (type === 'teacher') {
+                teacherBtn.className = 'p-3 border-2 border-yellow-500 bg-yellow-50 rounded-lg transition text-center';
+                teacherForm.classList.remove('hidden');
+            }
+        }
+
+        function selectChildCount(type) {
+            selectedChildCount = type;
+            
+            const singleBtn = document.getElementById('singleChildBtn');
+            const multipleBtn = document.getElementById('multipleChildrenBtn');
+            const singleInput = document.getElementById('singleChildInput');
+            const multipleInputs = document.getElementById('multipleChildrenInputs');
+            
+            // Reset button styles
+            singleBtn.className = 'p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center';
+            multipleBtn.className = 'p-3 border-2 border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition text-center';
+            
+            if (type === 'single') {
+                singleBtn.className = 'p-3 border-2 border-yellow-500 bg-yellow-50 rounded-lg transition text-center';
+                singleInput.classList.remove('hidden');
+                multipleInputs.classList.add('hidden');
+            } else if (type === 'multiple') {
+                multipleBtn.className = 'p-3 border-2 border-yellow-500 bg-yellow-50 rounded-lg transition text-center';
+                multipleInputs.classList.remove('hidden');
+                singleInput.classList.add('hidden');
+            }
+        }
+
+        function addChildInput() {
+            const container = document.getElementById('childrenInputContainer');
+            const currentCount = container.children.length;
+            
+            if (currentCount >= 6) {
+                NotificationManager.error('Maximum of 6 children allowed');
+                return;
+            }
+            
+            const newInput = document.createElement('div');
+            newInput.className = 'flex items-center space-x-2 mb-2';
+            
+            const childNumbers = ['Third', 'Fourth', 'Fifth', 'Sixth'];
+            const placeholder = childNumbers[currentCount - 2] + " child's name";
+            
+            newInput.innerHTML = `
+                <input type="text" name="childName" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm" placeholder="${placeholder}">
+                <button type="button" onclick="removeChildInput(this)" class="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg font-bold transition">✕</button>
+            `;
+            
+            container.appendChild(newInput);
+            
+            if (currentCount + 1 >= 6) {
+                document.getElementById('addChildButton').style.display = 'none';
+            }
+        }
+
+        function removeChildInput(button) {
+            const container = document.getElementById('childrenInputContainer');
+            if (container.children.length > 2) {
+                button.parentElement.remove();
+                document.getElementById('addChildButton').style.display = 'block';
+            }
+        }
+
+        // Registration validation and handling
+        function handleRegister(event) {
+            event.preventDefault();
+            clearErrors();
+            
+            // Get form data
+            const formData = new FormData(event.target);
+            const data = {
+                fullName: formData.get('fullName')?.trim(),
+                email: formData.get('email')?.trim(),
+                phone: formData.get('phone')?.trim(),
+                password: formData.get('password')?.trim()
+            };
+            
+            // Validate name
+            if (!data.fullName) {
+                showError('reg_fullName', 'Please enter your full name.');
+                return;
+            }
+            
+            const nameValidation = UserManager.validateName(data.fullName);
+            if (!nameValidation.valid) {
+                showError('reg_fullName', nameValidation.error);
+                return;
+            }
+            
+            // Validate email
+            if (!data.email) {
+                showError('reg_email', 'Please enter your email address.');
+                return;
+            }
+            
+            if (!UserManager.validateEmail(data.email)) {
+                showError('reg_email', 'Please enter a valid email address (e.g., john@example.com).');
+                return;
+            }
+            
+            // Validate phone
+            if (!data.phone) {
+                showError('reg_phone', 'Please enter your phone number.');
+                return;
+            }
+            
+            if (!UserManager.validatePhone(data.phone)) {
+                showError('reg_phone', 'Please enter a valid phone number (e.g., +234 801 234 5678).');
+                return;
+            }
+            
+            // Validate password
+            if (!data.password) {
+                showError('reg_password', 'Please enter a password.');
+                return;
+            }
+            
+            const passwordValidation = UserManager.validatePassword(data.password);
+            if (!passwordValidation.valid) {
+                showError('reg_password', passwordValidation.error);
+                return;
+            }
+            
+            // Validate children
+            let children = [];
+            if (!selectedChildCount) {
+                showError('childCount', 'Please select how many children you have by clicking "One Child" or "Multiple" button.');
+                return;
+            }
+            
+            if (selectedChildCount === 'single') {
+                const singleChildName = document.getElementById('reg_singleChildName').value.trim();
+                if (!singleChildName) {
+                    showError('reg_singleChildName', 'Please enter your child\'s name.');
+                    return;
+                }
+                
+                const childNameValidation = UserManager.validateName(singleChildName);
+                if (!childNameValidation.valid) {
+                    showError('reg_singleChildName', childNameValidation.error);
+                    return;
+                }
+                
+                children = [singleChildName];
+            } else if (selectedChildCount === 'multiple') {
+                const childInputs = document.querySelectorAll('#childrenInputContainer input[name="childName"]');
+                const childNames = Array.from(childInputs)
+                    .map(input => input.value.trim())
+                    .filter(name => name !== '');
+                
+                if (childNames.length < 2) {
+                    showError('multipleChildren', 'Please enter at least 2 children names for multiple children registration.');
+                    return;
+                }
+                
+                // Check if any visible inputs are empty
+                const visibleInputs = Array.from(childInputs);
+                const hasEmptyRequired = visibleInputs.some(input => input.value.trim() === '');
+                if (hasEmptyRequired) {
+                    showError('multipleChildren', 'Please fill in all children names. All visible fields are required.');
+                    return;
+                }
+                
+                // Validate each child name
+                for (let i = 0; i < childNames.length; i++) {
+                    const childNameValidation = UserManager.validateName(childNames[i]);
+                    if (!childNameValidation.valid) {
+                        showError('multipleChildren', `Child ${i + 1}: ${childNameValidation.error}`);
+                        return;
+                    }
+                }
+                
+                // Check for duplicate names
+                const uniqueNames = [...new Set(childNames)];
+                if (uniqueNames.length !== childNames.length) {
+                    showError('multipleChildren', 'Please ensure all children have different names.');
+                    return;
+                }
+                
+                children = childNames;
+            }
+            
+            // Attempt to register user
+            const registrationData = {
+                fullName: data.fullName,
+                email: data.email,
+                phone: data.phone,
+                password: data.password,
+                children: children
+            };
+            
+            const result = UserManager.registerUser(registrationData);
+            
+            if (result.success) {
+                currentUser = result.user;
+                UserManager.saveUser(currentUser);
+                
+                NotificationManager.success(`Welcome ${data.fullName}! Your parent account has been created successfully. 🎉`);
+                updateNavigation();
+                showDashboard();
+                closeModal();
+            } else {
+                showError('reg_email', result.error);
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('parentEmail').value.trim();
+            const password = document.getElementById('parentPassword').value.trim();
+            
+            // Clear any previous error states
+            document.getElementById('parentEmail').classList.remove('field-error');
+            document.getElementById('parentPassword').classList.remove('field-error');
+            
+            // Validate input
+            if (!email) {
+                document.getElementById('parentEmail').classList.add('field-error');
+                document.getElementById('parentEmail').focus();
+                NotificationManager.error('Please enter your email address.');
+                return;
+            }
+            
+            if (!password) {
+                document.getElementById('parentPassword').classList.add('field-error');
+                document.getElementById('parentPassword').focus();
+                NotificationManager.error('Please enter your password.');
+                return;
+            }
+            
+            if (!UserManager.validateEmail(email)) {
+                document.getElementById('parentEmail').classList.add('field-error');
+                document.getElementById('parentEmail').focus();
+                NotificationManager.error('Please enter a valid email address.');
+                return;
+            }
+            
+            // Attempt authentication
+            const result = UserManager.authenticateUser(email, password);
+            
+            if (result.success) {
+                currentUser = result.user;
+                UserManager.saveUser(currentUser);
+                tasks = TaskManager.loadTasks(currentUser.id);
+                
+                NotificationManager.success(`Welcome back, ${currentUser.name}! 👋`);
+                updateNavigation();
+                showDashboard();
+                closeModal();
+                
+                // Clear form
+                document.getElementById('parentEmail').value = '';
+                document.getElementById('parentPassword').value = '';
+            } else {
+                // Highlight both fields as there was an authentication error
+                document.getElementById('parentEmail').classList.add('field-error');
+                document.getElementById('parentPassword').classList.add('field-error');
+                document.getElementById('parentPassword').focus();
+                NotificationManager.error(result.error);
+            }
+        }
+
+        function handleTeacherLogin(event) {
+            event.preventDefault();
+            const name = document.getElementById('teacherName').value.trim();
+            const phone = document.getElementById('teacherPhone').value.trim();
+            const code = document.getElementById('teacherCode').value.trim().toUpperCase();
+            
+            // Clear any previous error states
+            document.getElementById('teacherName').classList.remove('field-error');
+            document.getElementById('teacherPhone').classList.remove('field-error');
+            document.getElementById('teacherCode').classList.remove('field-error');
+            
+            // Validate name
+            if (!name) {
+                document.getElementById('teacherName').classList.add('field-error');
+                document.getElementById('teacherName').focus();
+                NotificationManager.error('Please enter your full name.');
+                return;
+            }
+            
+            const nameValidation = UserManager.validateName(name);
+            if (!nameValidation.valid) {
+                document.getElementById('teacherName').classList.add('field-error');
+                document.getElementById('teacherName').focus();
+                NotificationManager.error(nameValidation.error);
+                return;
+            }
+            
+            // Validate phone
+            if (!phone) {
+                document.getElementById('teacherPhone').classList.add('field-error');
+                document.getElementById('teacherPhone').focus();
+                NotificationManager.error('Please enter your phone number.');
+                return;
+            }
+            
+            if (!UserManager.validatePhone(phone)) {
+                document.getElementById('teacherPhone').classList.add('field-error');
+                document.getElementById('teacherPhone').focus();
+                NotificationManager.error('Please enter a valid phone number (e.g., +234 801 234 5678).');
+                return;
+            }
+            
+            // Validate teacher code
+            if (!code) {
+                document.getElementById('teacherCode').classList.add('field-error');
+                document.getElementById('teacherCode').focus();
+                NotificationManager.error('Please enter the teacher code provided by the parent.');
+                return;
+            }
+            
+            if (code.length < 6) {
+                document.getElementById('teacherCode').classList.add('field-error');
+                document.getElementById('teacherCode').focus();
+                NotificationManager.error('Teacher code must be at least 6 characters long.');
+                return;
+            }
+            
+            // Attempt teacher authentication
+            const result = UserManager.authenticateTeacher(name, phone, code);
+            
+            if (result.success) {
+                currentUser = result.user;
+                UserManager.saveUser(currentUser);
+                
+                // Load tasks from the parent's account (shared tasks)
+                if (currentUser.parentId) {
+                    tasks = TaskManager.loadTasks(currentUser.parentId);
+                } else {
+                    tasks = [];
+                }
+                
+                NotificationManager.success(`Welcome ${name}! You've successfully joined as a teacher. 🎉`);
+                updateNavigation();
+                showDashboard();
+                closeModal();
+                
+                // Clear form
+                document.getElementById('teacherName').value = '';
+                document.getElementById('teacherPhone').value = '';
+                document.getElementById('teacherCode').value = '';
+            } else {
+                document.getElementById('teacherCode').classList.add('field-error');
+                document.getElementById('teacherCode').focus();
+                NotificationManager.error(result.error);
+            }
+        }
+
+        // Navigation functions
+        function updateNavigation() {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            const userNameDisplay = document.getElementById('userNameDisplay');
+            const dropdownUserName = document.getElementById('dropdownUserName');
+            const dropdownUserType = document.getElementById('dropdownUserType');
+
+            if (currentUser) {
+                loginBtn.classList.add('hidden');
+                registerBtn.classList.add('hidden');
+                userDropdown.classList.remove('hidden');
+                
+                userNameDisplay.textContent = currentUser.name;
+                dropdownUserName.textContent = currentUser.name;
+                dropdownUserType.textContent = currentUser.type === 'parent' ? 'Parent' : 'Teacher';
+            } else {
+                loginBtn.classList.remove('hidden');
+                registerBtn.classList.remove('hidden');
+                userDropdown.classList.add('hidden');
+            }
+        }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function logout() {
+            UserManager.clearUser();
+            currentUser = null;
+            tasks = [];
+            updateNavigation();
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('heroSection').classList.remove('hidden');
+            document.getElementById('featuresSection').classList.remove('hidden');
+            document.getElementById('getStartedSection').classList.remove('hidden');
+            document.getElementById('pricingSection').classList.remove('hidden');
+            document.getElementById('contactFooter').classList.remove('hidden');
+            NotificationManager.success('You have been logged out successfully.');
+        }
+
+        // Dashboard functions
+        function showDashboard() {
+            document.getElementById('heroSection').classList.add('hidden');
+            document.getElementById('featuresSection').classList.add('hidden');
+            document.getElementById('getStartedSection').classList.add('hidden');
+            document.getElementById('pricingSection').classList.add('hidden');
+            document.getElementById('contactFooter').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            
+            document.getElementById('parentDashboard').classList.remove('hidden');
+            updateWelcomeMessage();
+            updateTrialBanner();
+            populateChildSelect();
+            renderTasks();
+            renderFamilyLeaderboard();
+            updateStats();
+        }
+
+        function updateTrialBanner() {
+            const banner = document.getElementById('trialBanner');
+            
+            if (!currentUser || currentUser.type !== 'parent' || currentUser.subscriptionStatus === 'active') {
+                banner.classList.add('hidden');
+                return;
+            }
+
+            const daysRemaining = getDaysRemaining(currentUser);
+            const isExpired = isTrialExpired(currentUser);
+
+            if (isExpired) {
+                banner.className = 'bg-red-100 border-l-4 border-red-500 p-4 rounded-lg mb-8';
+                banner.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="text-2xl mr-3">⚠️</div>
+                            <div>
+                                <h4 class="font-bold text-red-800">Trial Expired</h4>
+                                <p class="text-red-700">Your 7-day free trial has ended. Subscribe now to continue using EasyHomework!</p>
+                            </div>
+                        </div>
+                        <button onclick="showPaymentModal()" class="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-700 transition">
+                            Subscribe Now
+                        </button>
+                    </div>
+                `;
+            } else if (daysRemaining <= 3) {
+                banner.className = 'bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg mb-8';
+                banner.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="text-2xl mr-3">⏰</div>
+                            <div>
+                                <h4 class="font-bold text-yellow-800">Trial Ending Soon</h4>
+                                <p class="text-yellow-700">${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in your free trial. Subscribe to keep the fun going!</p>
+                            </div>
+                        </div>
+                        <button onclick="showPaymentModal()" class="bg-yellow-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-700 transition">
+                            Subscribe
+                        </button>
+                    </div>
+                `;
+            } else {
+                banner.className = 'bg-blue-100 border-l-4 border-blue-500 p-4 rounded-lg mb-8';
+                banner.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="text-2xl mr-3">🎉</div>
+                            <div>
+                                <h4 class="font-bold text-blue-800">Free Trial Active</h4>
+                                <p class="text-blue-700">${daysRemaining} days remaining in your free trial. Enjoying EasyHomework?</p>
+                            </div>
+                        </div>
+                        <button onclick="showPaymentModal()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                            Subscribe Early
+                        </button>
+                    </div>
+                `;
+            }
+            
+            banner.classList.remove('hidden');
+        }
+
+        function updateWelcomeMessage() {
+            const welcomeElement = document.getElementById('welcomeMessage');
+            const dashboardTitle = document.getElementById('dashboardTitle');
+            
+            if (currentUser && currentUser.name) {
+                if (currentUser.type === 'parent') {
+                    welcomeElement.textContent = `Welcome ${currentUser.name}! Manage tasks and track your children's progress`;
+                    dashboardTitle.textContent = 'Family Dashboard 👨‍👩‍👧‍👦';
+                } else if (currentUser.type === 'teacher') {
+                    welcomeElement.textContent = `Welcome ${currentUser.name}! Collaborate with parents to track student progress`;
+                    dashboardTitle.textContent = 'Teacher Collaboration Dashboard 👩‍🏫';
+                }
+            }
+        }
+
+        function populateChildSelect() {
+            const childSelect = document.getElementById('childSelect');
+            childSelect.innerHTML = '<option value="">Select child...</option>';
+            
+            if (currentUser && currentUser.children && currentUser.children.length > 0) {
+                currentUser.children.forEach((childName, index) => {
+                    const emoji = index % 2 === 0 ? '👧' : '👦';
+                    const option = document.createElement('option');
+                    option.value = childName.toLowerCase().replace(/\s+/g, '');
+                    option.textContent = `${emoji} ${childName}`;
+                    childSelect.appendChild(option);
+                });
+            }
+        }
+
+        function renderFamilyLeaderboard() {
+            const leaderboard = document.getElementById('familyLeaderboard');
+            if (!currentUser || !currentUser.children || currentUser.children.length === 0) {
+                leaderboard.innerHTML = '<p class="text-gray-500 text-center">Add children to see the family leaderboard!</p>';
+                return;
+            }
+
+            const childrenStats = currentUser.children.map((childName, index) => {
+                const childKey = childName.toLowerCase().replace(/\s+/g, '');
+                const childTasks = tasks.filter(task => task.child === childKey);
+                const completedTasks = childTasks.filter(task => task.completed);
+                const points = completedTasks.length * 5;
+                
+                return {
+                    name: childName,
+                    points: points,
+                    completedTasks: completedTasks.length,
+                    totalTasks: childTasks.length,
+                    emoji: index % 2 === 0 ? '👧' : '👦'
+                };
+            });
+
+            childrenStats.sort((a, b) => b.points - a.points);
+
+            leaderboard.innerHTML = '';
+            childrenStats.forEach((child, index) => {
+                const position = index + 1;
+                const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : `#${position}`;
+                
+                const childElement = document.createElement('div');
+                childElement.className = `flex items-center justify-between p-4 rounded-lg ${position === 1 ? 'bg-yellow-50 border-2 border-yellow-300' : 'bg-gray-50'}`;
+                
+                childElement.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="text-2xl font-bold ${position <= 3 ? 'text-3xl' : 'text-gray-600'}">${medal}</div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">${child.emoji}</span>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">${child.name}</h4>
+                                <p class="text-sm text-gray-600">${child.completedTasks}/${child.totalTasks} tasks completed</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-orange-500">${child.points} pts</div>
+                        <div class="flex space-x-1 mt-1">
+                            ${Array(Math.min(child.completedTasks, 5)).fill('⭐').join('')}
+                        </div>
+                    </div>
+                `;
+                
+                leaderboard.appendChild(childElement);
+            });
+        }
+
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            
+            if (tasks.length === 0) {
+                tasksList.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="text-4xl mb-4">📝</div>
+                        <h4 class="text-xl font-semibold text-gray-600 mb-2">No tasks yet!</h4>
+                        <p class="text-gray-500 mb-4">Start by adding your first task to get the homework fun started.</p>
+                        <button onclick="showAddTaskModal()" class="gradient-bg text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                            ➕ Add Your First Task
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            tasksList.innerHTML = '';
+
+            tasks.forEach(task => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition';
+                
+                const categoryIcons = {
+                    homework: '📝',
+                    reading: '📚',
+                    project: '🎨',
+                    chores: '🏠'
+                };
+
+                let childDisplay = task.child;
+                let childEmoji = '👦';
+                
+                if (currentUser && currentUser.children) {
+                    const foundChild = currentUser.children.find(child => 
+                        child.toLowerCase().replace(/\s+/g, '') === task.child
+                    );
+                    if (foundChild) {
+                        childDisplay = foundChild;
+                        const childIndex = currentUser.children.indexOf(foundChild);
+                        childEmoji = childIndex % 2 === 0 ? '👧' : '👦';
+                    }
+                }
+
+                const dueDate = new Date(task.dueDate);
+                const today = new Date();
+                const isOverdue = dueDate < today && !task.completed;
+                const dueDateClass = isOverdue ? 'text-red-600 font-semibold' : 'text-gray-600';
+
+                taskElement.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="text-2xl">${categoryIcons[task.category] || '📝'}</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 ${task.completed ? 'line-through text-gray-500' : ''}">${task.title}</h4>
+                            <p class="text-sm ${dueDateClass}">
+                                ${childEmoji} ${childDisplay} • Due: ${dueDate.toLocaleDateString()}
+                                ${isOverdue ? ' (OVERDUE)' : ''}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        ${task.completed ? 
+                            '<span class="text-green-600 font-semibold">✅ Completed (+5 pts)</span>' : 
+                            `<button onclick="completeTask('${task.id}')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Mark Complete</button>`
+                        }
+                        <button onclick="deleteTask('${task.id}')" class="text-red-500 hover:text-red-700 px-2 py-1 rounded transition">🗑️</button>
+                    </div>
+                `;
+                
+                tasksList.appendChild(taskElement);
+            });
+        }
+
+        function completeTask(taskId) {
+            if (TaskManager.completeTask(currentUser.id, taskId)) {
+                // Update local tasks array
+                const task = tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.completed = true;
+                    task.completedAt = new Date().toISOString();
+                }
+                
+                renderTasks();
+                renderFamilyLeaderboard();
+                updateStats();
+                showCelebration();
+                NotificationManager.success('Task completed! +5 points earned! 🎉');
+            } else {
+                NotificationManager.error('Failed to complete task. Please try again.');
+            }
+        }
+
+        function deleteTask(taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                if (TaskManager.deleteTask(currentUser.id, taskId)) {
+                    // Update local tasks array
+                    tasks = tasks.filter(t => t.id !== taskId);
+                    
+                    renderTasks();
+                    renderFamilyLeaderboard();
+                    updateStats();
+                    NotificationManager.success('Task deleted successfully.');
+                } else {
+                    NotificationManager.error('Failed to delete task. Please try again.');
+                }
+            }
+        }
+
+        function addTask(event) {
+            event.preventDefault();
+            
+            const newTask = {
+                title: document.getElementById('taskTitle').value.trim(),
+                child: document.getElementById('childSelect').value,
+                category: document.getElementById('taskCategory').value,
+                dueDate: document.getElementById('taskDueDate').value
+            };
+            
+            // Validation
+            if (!newTask.title) {
+                NotificationManager.error('Please enter a task title.');
+                return;
+            }
+            
+            if (!newTask.child) {
+                NotificationManager.error('Please select a child.');
+                return;
+            }
+            
+            if (!newTask.category) {
+                NotificationManager.error('Please select a category.');
+                return;
+            }
+            
+            if (!newTask.dueDate) {
+                NotificationManager.error('Please select a due date.');
+                return;
+            }
+            
+            if (TaskManager.addTask(currentUser.id, newTask)) {
+                // Update local tasks array
+                tasks = TaskManager.loadTasks(currentUser.id);
+                
+                renderTasks();
+                renderFamilyLeaderboard();
+                updateStats();
+                closeModal();
+                event.target.reset();
+                NotificationManager.success('Task added successfully! 📝');
+            } else {
+                NotificationManager.error('Failed to add task. Please try again.');
+            }
+        }
+
+        function updateStats() {
+            const completedCount = tasks.filter(t => t.completed).length;
+            const totalPoints = completedCount * 5;
+            
+            document.getElementById('totalTasks').textContent = tasks.length;
+            document.getElementById('completedTasks').textContent = completedCount;
+            document.getElementById('totalPoints').textContent = totalPoints;
+            document.getElementById('teacherCount').textContent = '0'; // Would be dynamic in production
+        }
+
+        function showCelebration() {
+            const celebration = document.createElement('div');
+            celebration.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl z-50 sticker';
+            celebration.textContent = '🎉';
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                document.body.removeChild(celebration);
+            }, 1000);
+        }
+
+        function showAddTaskModal() {
+            populateChildSelect();
+            document.getElementById('addTaskModal').classList.remove('hidden');
+        }
+
+        function showInviteTeacherModal() {
+            if (currentUser && currentUser.teacherCode) {
+                document.getElementById('teacherCode').textContent = currentUser.teacherCode;
+            }
+            document.getElementById('inviteTeacherModal').classList.remove('hidden');
+        }
+
+        function showRewardsModal() {
+            document.getElementById('rewardsModal').classList.remove('hidden');
+        }
+
+        function showPaymentModal() {
+            document.getElementById('paymentModal').classList.remove('hidden');
+        }
+
+        function selectPlan(planType, amount) {
+            if (!currentUser) {
+                NotificationManager.error('Please log in to subscribe');
+                return;
+            }
+
+            const planName = planType === 'single' ? 'Single Child Plan' : 'Multiple Children Plan';
+            
+            // Generate unique transaction reference
+            const reference = 'EH-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            
+            const handler = PaystackPop.setup({
+                key: 'pk_test_0123456789abcdef0123456789abcdef01234567', // Replace with your actual public key
+                email: currentUser.email,
+                amount: amount * 100, // Paystack expects amount in kobo
+                currency: 'NGN',
+                ref: reference,
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Plan Type",
+                            variable_name: "plan_type",
+                            value: planType
+                        },
+                        {
+                            display_name: "Customer Name",
+                            variable_name: "customer_name",
+                            value: currentUser.name
+                        },
+                        {
+                            display_name: "Phone Number",
+                            variable_name: "phone_number",
+                            value: currentUser.phone
+                        }
+                    ]
+                },
+                callback: function(response) {
+                    handlePaymentSuccess(response, planType, amount);
+                },
+                onClose: function() {
+                    NotificationManager.warning("Payment was cancelled. You can try again anytime! 💳");
+                }
+            });
+            
+            handler.openIframe();
+            closeModal();
+        }
+
+        function handlePaymentSuccess(paymentData, planType, amount) {
+            // Update user subscription status
+            currentUser.subscriptionStatus = 'active';
+            currentUser.subscriptionPlan = planType;
+            currentUser.subscriptionAmount = amount;
+            currentUser.subscriptionDate = new Date().toISOString();
+            currentUser.paymentReference = paymentData.reference;
+            currentUser.paystackTransactionId = paymentData.trans;
+            
+            // Save updated user data
+            UserManager.saveUser(currentUser);
+            
+            const planName = planType === 'single' ? 'Single Child Plan' : 'Multiple Children Plan';
+            NotificationManager.success(`🎉 Payment Successful! Welcome to the ${planName}! 🇳🇬`);
+            
+            // Update the dashboard
+            updateTrialBanner();
+            showPaymentCelebration();
+        }
+        
+        function showPaymentCelebration() {
+            const celebration = document.createElement('div');
+            celebration.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            celebration.innerHTML = `
+                <div class="bg-white rounded-xl p-8 text-center max-w-md mx-4 animate-bounce">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h3 class="text-2xl font-bold text-green-600 mb-2">Payment Successful!</h3>
+                    <p class="text-gray-700 mb-4">Welcome to EasyHomework Premium! 🇳🇬</p>
+                    <div class="text-4xl">👨‍👩‍👧‍👦 ✨</div>
+                </div>
+            `;
+            
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => {
+                document.body.removeChild(celebration);
+            }, 3000);
+        }
+
+        function copyTeacherCode() {
+            const code = document.getElementById('teacherCode').textContent.trim();
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(code).then(() => {
+                    NotificationManager.success('Teacher code copied to clipboard! 📋');
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(code);
+                });
+            } else {
+                fallbackCopyTextToClipboard(code);
+            }
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    NotificationManager.success('Teacher code copied to clipboard! 📋');
+                } else {
+                    NotificationManager.error('Copy failed. Code: ' + text);
+                }
+            } catch (err) {
+                NotificationManager.error('Copy failed. Code: ' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Event listeners
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('dropdownMenu');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (!userDropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Demo account creation
+        function createDemoAccount() {
+            // Create demo parent account
+            const demoUser = {
+                id: 'demo_parent_123',
+                type: 'parent',
+                name: 'Demo Parent',
+                email: 'demo@easyhomework.com',
+                phone: '+234 801 234 5678',
+                passwordHash: UserManager.hashPassword('demo123'),
+                children: ['Emma', 'James', 'Sarah'],
+                trialStartDate: new Date().toISOString(),
+                subscriptionStatus: 'trial',
+                teacherCode: 'DEMO12345',
+                createdAt: new Date().toISOString()
+            };
+
+            // Save demo user to database
+            const allUsers = UserManager.getAllUsers();
+            const existingDemo = allUsers.find(user => user.email === 'demo@easyhomework.com');
+            if (!existingDemo) {
+                allUsers.push(demoUser);
+                UserManager.saveAllUsers(allUsers);
+            }
+
+            // Create demo tasks
+            const demoTasks = [
+                {
+                    id: 'demo_task_1',
+                    title: 'Complete Math Homework - Chapter 5',
+                    child: 'emma',
+                    category: 'homework',
+                    dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_task_2',
+                    title: 'Read "The Little Prince" - Pages 1-20',
+                    child: 'james',
+                    category: 'reading',
+                    dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    completed: true,
+                    createdAt: new Date().toISOString(),
+                    completedAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_task_3',
+                    title: 'Science Project - Solar System Model',
+                    child: 'sarah',
+                    category: 'project',
+                    dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_task_4',
+                    title: 'Clean Room and Organize Books',
+                    child: 'emma',
+                    category: 'chores',
+                    dueDate: new Date().toISOString().split('T')[0],
+                    completed: true,
+                    createdAt: new Date().toISOString(),
+                    completedAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo_task_5',
+                    title: 'Practice Piano - 30 minutes',
+                    child: 'james',
+                    category: 'homework',
+                    dueDate: new Date().toISOString().split('T')[0],
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                }
+            ];
+
+            // Save demo tasks
+            TaskManager.saveTasks(demoUser.id, demoTasks);
+
+            // Log in as demo user
+            currentUser = demoUser;
+            UserManager.saveUser(currentUser);
+            tasks = demoTasks;
+
+            NotificationManager.success('Demo account created! Explore all features with sample data. 🎉');
+            updateNavigation();
+            showDashboard();
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984ec870105f1484',t:'MTc1ODg0Nzk5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
